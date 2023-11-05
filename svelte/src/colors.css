@@ -1,0 +1,132 @@
+﻿:root {
+    --ansi-black: #1f1f1f;
+    --ansi-blue: #0000ba;
+    --ansi-green: #00ba00;
+    --ansi-cyan: #00baba;
+    --ansi-red: #ba0000;
+    --ansi-magenta: #ba00ba;
+    --ansi-yellow: #baba00;
+    --ansi-white: #CCCCCC;
+    --ansi-bright-black: #545454;
+    --ansi-bright-blue: #5454ff;
+    --ansi-bright-green: #00ff00;
+    --ansi-bright-cyan: #54ffff;
+    --ansi-bright-red: #ff5454;
+    --ansi-bright-magenta: #ff54ff;
+    --ansi-bright-yellow: #ffff54;
+    --ansi-bright-white: #ffffff;
+}
+
+/* Dark */
+.ansi-black-fg {
+    color: var(--ansi-black);
+}
+
+.ansi-black-bg {
+    background-color: var(--ansi-black);
+}
+
+.ansi-red-fg {
+    color: var(--ansi-red);
+}
+
+.ansi-red-bg {
+    background-color: var(--ansi-red);
+}
+
+.ansi-green-fg {
+    color: var(--ansi-green);
+}
+
+.ansi-green-bg {
+    background-color: var(--ansi-green);
+}
+
+.ansi-yellow-fg {
+    color: var(--ansi-yellow);
+}
+
+.ansi-yellow-bg {
+    background-color: var(--ansi-yellow);
+}
+
+.ansi-blue-fg {
+    color: var(--ansi-blue);
+}
+
+.ansi-blue-bg {
+    background-color: var(--ansi-blue);
+}
+
+.ansi-magenta-fg {
+    color: var(--ansi-magenta);
+}
+
+.ansi-magenta-bg {
+    background-color: var(--ansi-magenta);
+}
+
+.ansi-cyan-fg {
+    color: var(--ansi-cyan);
+}
+
+.ansi-cyan-bg {
+    background-color: var(--ansi-cyan);
+}
+
+/* Bright */
+.ansi-bright-black-fg {
+    color: var(--ansi-bright-black);
+}
+
+.ansi-bright-black-bg {
+    background-color: var(--ansi-bright-black);
+}
+
+.ansi-bright-red-fg {
+    color: var(--ansi-bright-red);
+}
+
+.ansi-bright-red-bg {
+    background-color: var(--ansi-bright-red);
+}
+
+.ansi-bright-green-fg {
+    color: var(--ansi-bright-green);
+}
+
+.ansi-bright-green-bg {
+    background-color: var(--ansi-bright-green);
+}
+
+.ansi-bright-yellow-fg {
+    color: var(--ansi-bright-yellow);
+}
+
+.ansi-bright-yellow-bg {
+    background-color: var(--ansi-bright-yellow);
+}
+
+.ansi-bright-blue-fg {
+    color: var(--ansi-bright-blue);
+}
+
+.ansi-bright-blue-bg {
+    background-color: var(--ansi-bright-blue);
+}
+
+.ansi-bright-magenta-fg {
+    color: var(--ansi-bright-magenta);
+}
+
+.ansi-bright-magenta-bg {
+    background-color: var(--ansi-bright-magenta);
+}
+
+.ansi-bright-cyan-fg {
+    color: var(--ansi-bright-cyan);
+}
+
+.ansi-bright-cyan-bg {
+    background-color: var(--ansi-bright-cyan);
+}

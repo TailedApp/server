@@ -1,0 +1,4 @@
+body {
+  color: var(--ansi-white);
+  background-color: var(--ansi-black);
+}
