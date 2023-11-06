@@ -12,15 +12,20 @@
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.4.2",
     "@tsconfig/svelte": "^5.0.0",
+    "@types/wicg-file-system-access": "^2023.10.2",
     "svelte": "^4.0.5",
     "svelte-check": "^3.4.6",
+    "svelte-copy": "^1.4.1",
+    "svelte-routing": "^2.6.0",
     "tslib": "^2.6.0",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   },
   "dependencies": {
+    "@castlenine/svelte-qrcode": "^1.1.0",
     "@microsoft/signalr": "^7.0.12",
     "ansi_up": "^6.0.2",
+    "short-unique-id": "^5.0.3",
     "svelte-inview": "^4.0.1"
   }
 }

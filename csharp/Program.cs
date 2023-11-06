@@ -16,10 +16,11 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 
 app.UseStaticFiles();
 
-app.Map("/", (HttpContext context) =>
+var tailHtml = await File.ReadAllTextAsync("wwwroot/index.html");
+
+app.MapWhen(x => x.Request.Path.ToString() == "/", config =>
 {
-    context.Response.Redirect(Environment.GetEnvironmentVariable("CUSTOM_HOMEPAGE") ??
-                              "https://docs.tailed.live/");
+    config.Run(async context => await context.Response.WriteAsync(tailHtml));
 });
 
 #if DEBUG
@@ -38,8 +39,6 @@ app.Map("/", (HttpContext context) =>
             .AllowAnyHeader()
             .AllowCredentials());
 #else
-    var tailHtml = await File.ReadAllTextAsync("wwwroot/index.html");
-
     app.MapWhen(x => Regex.IsMatch(x.Request.Path.ToString(), @"^/[a-zA-Z0-9_\-=]{22}$"), 
     config =>
     {
