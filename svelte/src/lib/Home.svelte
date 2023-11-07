@@ -4,12 +4,19 @@
     import QrCode from '@castlenine/svelte-qrcode';
     import ShortUniqueId from 'short-unique-id';
     import { copy } from 'svelte-copy';
+    import type { RuleListItem } from './RuleListItem';
 
     let worker: Worker | undefined = undefined;
+
+    let ruleList: RuleListItem[];
+    $: ruleList = [];
 
     const generator = new ShortUniqueId({ length: 22 });
 
     const loadWorker = async () => {
+        const response = await fetch('/rules/index.json');
+        ruleList = await response.json() as RuleListItem[];
+
         const w = await import('./Worker?worker');
         worker = new w.default();
     };
@@ -90,12 +97,12 @@
         tailing = true;
         id = generator.randomUUID();
 
-        postMessage(new Message(id, rules, 'start', fileHandle!));
+        postMessage(new Message(id, 'start', rules, fileHandle!));
     }
 
     function onStop(e: MouseEvent) {
         tailing = false;
-        postMessage(new Message(id, rules, 'stop', fileHandle!));
+        postMessage(new Message(id, 'stop', rules, fileHandle!));
     }
 
     function isFileSystemEnabled(): boolean {
@@ -273,7 +280,10 @@
                         <p>Optionally, choose some highlighting rules to be applied:</p>
                         <select id="rules" bind:value={rules}>
                             <option value="none" selected>None</option>
-                            <option value="serilog">Serilog</option>
+                            
+                            {#each ruleList as rule}
+                                <option value={rule.id}>{rule.name}</option>
+                            {/each}
                         </select>
 
                         <div class="button-container">
@@ -281,7 +291,7 @@
                         </div>
                     {:else}
                         <div id="details">
-                            <p><QrCode content={`https://tailed.live/${id}`} color="var(--ansi-white)" backgroundColor="var(--ansi-black)" /></p>
+                            <p><QrCode content={`https://tailed.live/${id}`} color="var(--ansi-white)" backgroundColor="var(--ansi-black)" size={250} /></p>
                             <p class="filename"><a href={`https://tailed.live/${id}`} target="_blank">{`https://tailed.live/${id}`}</a> 
                             <button id="copy" title="Copy URL" use:copy={`https://tailed.live/${id}`}>
                                 <img src="/copy.svg" alt="Copy" />

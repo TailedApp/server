@@ -1,4 +1,6 @@
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+import type { Rule } from './Rule';
+import { colorToAnsi, ColorPosition, Color } from './Colors';
 
 export class Message {
     id: string;
@@ -39,7 +41,7 @@ onmessage = async (e) => {
     }
 }
 
-async function doRead(id: string, rules: string, reference: FileSystemFileHandle) {
+async function doRead(id: string, rule_set: string, reference: FileSystemFileHandle) {
     try {
         connection = new HubConnectionBuilder()
             .withUrl(`/api/tail`)
@@ -47,6 +49,13 @@ async function doRead(id: string, rules: string, reference: FileSystemFileHandle
             .build();
 
         await connection.start();
+
+        let rules: Rule[] = [];
+        
+        if (rule_set !== 'none') {
+            const response = await fetch(`/rules/${rule_set}.json`);
+            rules = await response.json() as Rule[];
+        }
 
         while (running) {
             try {
@@ -61,6 +70,7 @@ async function doRead(id: string, rules: string, reference: FileSystemFileHandle
                     continue;
                 }
                 else if (fileSize < lastFileSize && fileSize > 0) {
+                    console.log('File truncated');
                     index = 0;
                 }
             
@@ -79,21 +89,23 @@ async function doRead(id: string, rules: string, reference: FileSystemFileHandle
                         currentIndex += value.length;
             
                         if (currentIndex > index) {
-                            index = currentIndex;
-                            if (rules !== 'none') {
+                            if (rules.length > 0) {
                                 const raw = decoder.decode(value.slice(index - currentIndex));
                                 const lines = raw.split('\n');
     
                                 for (let i = 0; i < lines.length; i++) {
-                                    // TODO: apply colorization rules
-                                    
+                                    for (let rule of rules) {
+                                        lines[i] = processRule(lines[i], rule);
+                                    }
                                 }
-    
+
                                 connection.invoke('SendData', id, lines.join('\n'));
                             }
                             else {
                                 connection.invoke('SendData', id, decoder.decode(value.slice(index - currentIndex)));
                             }
+
+                            index = currentIndex;
                         }
                     }
             
@@ -114,4 +126,38 @@ async function doRead(id: string, rules: string, reference: FileSystemFileHandle
     finally {
         await connection.stop();
     }
+}
+
+function processRule(line: string, rule: Rule): string {
+    const r = new RegExp(rule.pattern, `d${rule.ignore_case ? 'i' : ''}${rule.first_only ? '' : 'g'}`);
+    const matches = Array.from(RegExp.prototype[Symbol.matchAll].call(r, line)).reverse();
+    
+    for(let match of matches) {
+        if (match.indices?.groups?.c) {
+            line = [
+                line.slice(0, match.indices.groups.c[0]),
+                colorToAnsi(ColorPosition.Background, Color[rule.background as keyof typeof Color]),
+                colorToAnsi(ColorPosition.Foreground, Color[rule.foreground as keyof typeof Color]),
+                match.groups!.c,
+                line.slice(match.indices.groups.c[1], match.indices.groups.c[1]),
+                colorToAnsi(ColorPosition.Background, Color.Default),
+                colorToAnsi(ColorPosition.Foreground, Color.Default),
+                line.slice(match.indices.groups.c[1])
+            ].join('');
+        }
+        else {
+            line = [
+                line.slice(0, match.indices![0][0]),
+                colorToAnsi(ColorPosition.Background, Color[rule.background as keyof typeof Color]),
+                colorToAnsi(ColorPosition.Foreground, Color[rule.foreground as keyof typeof Color]),
+                match,
+                line.slice(match.indices![0][1], match.indices![0][1]),
+                colorToAnsi(ColorPosition.Background, Color.Default),
+                colorToAnsi(ColorPosition.Foreground, Color.Default),
+                line.slice(match.indices![0][1])
+            ].join('');
+        }
+    }
+
+    return line;
 }
