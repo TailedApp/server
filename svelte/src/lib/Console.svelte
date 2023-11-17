@@ -12,9 +12,21 @@
     $: lines = [];
     let lastLine: ConsoleLine | undefined;
     let spanIndex = 0;
-    let lockToBottomUntil = 0;
     let latestVisible: boolean;
     let initialAnchor = false;
+    let scrollPosition = 0;
+    let locked = true;
+
+    window.onscroll = () => {
+        const s = window.scrollY;
+
+        if (s < scrollPosition) {
+            console.log('Unlocked');
+            locked = false;
+        }
+
+        scrollPosition = s;
+    }
 
     $: latestVisible = false;
     
@@ -58,24 +70,20 @@
             }
             else {
                 // A new line of text.
-                if (anchor.isCurrentlyAnchored()) {
-                    lockToBottomUntil = Date.now() + 250;
-                }
-
                 lastLine = new ConsoleLine(spanIndex, parts[i]);
                 lines.push(lastLine);
                 spanIndex++;
 
-                if (lines.length > maxRows) {
+                if (lines.length > maxRows && locked) {
                     lines = lines.slice(maxRows * -1);
                 }
                 else {
                     lines = lines;
                 }
+            }
 
-                if (Date.now() < lockToBottomUntil) {
-                    anchor.scrollToBottom();
-                }
+            if (locked) {
+                anchor.scrollToBottom();
             }
         }
     });
@@ -87,6 +95,15 @@
 
     function onAnchored(event: CustomEvent<boolean>) {
         latestVisible = !event.detail;
+
+        if (!latestVisible) {
+            console.log('Locked');
+            locked = true;
+        }
+
+        if (latestVisible && locked) {
+            anchor.scrollToBottom();
+        }
 
         if (!initialAnchor && lines.length == 0 && latestVisible) {
             // Safari and iOS workaround
