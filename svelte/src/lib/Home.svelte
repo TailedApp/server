@@ -173,9 +173,14 @@
         width: 600px;
         height: 200px;
         text-align: center;
-        display: table-cell;
-        vertical-align: middle;
+        display: flex;
         padding: 20px;
+        margin: 0 auto;
+        align-items: center;
+    }
+
+    #drop-canvas p {
+        width: 100%;
     }
 
     :global(.drop-over) {
@@ -246,6 +251,28 @@
         width: 20px;
         vertical-align: middle;
     }
+
+    #cli pre {
+        margin-top: 30px;
+        margin-bottom: 30px;
+        padding: 20px;
+        background-color: black;
+    }
+
+    #cli p {
+        line-height: 1.5em;
+    }
+
+    #in-proc pre {
+        margin-top: 30px;
+        margin-bottom: 30px;
+        padding: 20px;
+        background-color: black;
+    }
+
+    #in-proc p {
+        line-height: 1.5em;
+    }
 </style>
 
 <div id="content">
@@ -310,12 +337,31 @@
                 {/if}
             </div>
         {:else if tab == 1}
-            <div>
-                Tab 2
+            <div id="cli">
+                <p>Tailed can be installed on your computer:</p>
+                <pre>
+    # Windows
+    choco install tailed
+
+    # MacOS
+    brew install TailedApp/tap/tailed
+                </pre>
+                <p>Follow the <a href="https://docs.tailed.live/command-line-tool/installation" target="_blank">guidance</a> for more details and other operating systems. For command line options, use:</p>
+                <pre>
+    tailed --help
+                </pre>
             </div>
         {:else if tab == 2}
-            <div>
-                Tab 3
+            <div id="in-proc">
+                <p>Components are available for Node and .NET:</p>
+                <pre>
+    # .NET
+    dotnet add package Tailed.Console
+
+    # Node
+    npm i @tailedapp/nodejs-lib
+                </pre>
+                <p>Further usage information can be found on the <a href="https://docs.tailed.live/client-libraries/node-js" target="_blank">Node</a> and <a href="https://docs.tailed.live/client-libraries/dotnet" target="_blank">.NET</a> documentation pages.</p>
             </div>
         {/if}
     </div>
